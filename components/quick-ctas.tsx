@@ -17,7 +17,7 @@ export default function QuickCtas() {
               <h4 className="font-bold text-primary text-sm uppercase tracking-wide">
                 Vacation Request Form
               </h4>
-              <p className="text-xs text-slate-500">Start planning today!</p>
+              <p className="text-sm font-semibold text-primary">Start planning today!</p>
             </div>
           </div>
           <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center btn-icon">
@@ -36,7 +36,7 @@ export default function QuickCtas() {
               <h4 className="font-bold text-primary text-sm uppercase tracking-wide">
                 Join Our VIP List
               </h4>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm font-semibold text-primary">
                 Add preferred airport or N/A
               </p>
             </div>

@@ -86,7 +86,7 @@ export default function Hero() {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-semibold text-slate-500 mb-1">
+                <label className="block text-[11px] uppercase tracking-wider font-bold text-primary mb-2">
                   Where to?
                 </label>
                 <div className="relative">
@@ -108,7 +108,7 @@ export default function Hero() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] uppercase tracking-wider font-semibold text-slate-500 mb-1">
+                  <label className="block text-[11px] uppercase tracking-wider font-bold text-primary mb-2">
                     Check-in
                   </label>
                   <input
@@ -124,7 +124,7 @@ export default function Hero() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] uppercase tracking-wider font-semibold text-slate-500 mb-1">
+                  <label className="block text-[11px] uppercase tracking-wider font-bold text-primary mb-2">
                     Check-out
                   </label>
                   <input
@@ -141,7 +141,7 @@ export default function Hero() {
                 </div>
               </div>
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-semibold text-slate-500 mb-1">
+                <label className="block text-[11px] uppercase tracking-wider font-bold text-primary mb-2">
                   Guests
                 </label>
                 <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200">

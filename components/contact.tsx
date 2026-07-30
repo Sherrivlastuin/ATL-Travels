@@ -36,10 +36,10 @@ export default function Contact() {
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="mb-12 text-center section-reveal">
-        <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+        <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-3">
           Get In Touch
         </h2>
-        <p className="text-slate-500 text-sm">
+        <p className="text-primary font-bold text-base">
           We&apos;d love to hear from you and help plan your dream vacation
         </p>
       </div>
@@ -56,7 +56,7 @@ export default function Contact() {
                 <h4 className="font-bold text-primary mb-1">Email</h4>
                 <a
                   href="mailto:atltravels@hotmail.com"
-                  className="text-slate-600 hover:text-accent transition"
+                  className="text-primary font-semibold hover:text-accent transition"
                 >
                   atltravels@hotmail.com
                 </a>
@@ -71,7 +71,7 @@ export default function Contact() {
                 <h4 className="font-bold text-primary mb-1">Phone</h4>
                 <a
                   href="tel:+17543423805"
-                  className="text-slate-600 hover:text-accent transition"
+                  className="text-primary font-semibold hover:text-accent transition"
                 >
                   +1 754-342-3805
                 </a>
@@ -84,7 +84,7 @@ export default function Contact() {
               </div>
               <div>
                 <h4 className="font-bold text-primary mb-1">Office</h4>
-                <p className="text-slate-600">
+                <p className="text-primary font-semibold">
                   Miami Beach 33105
                   <br />
                   United States
