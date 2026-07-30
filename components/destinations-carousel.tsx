@@ -65,10 +65,10 @@ export default function DestinationsCarousel() {
   return (
     <section id="destinations" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="mb-12 section-reveal">
-        <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+        <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-3">
           Top Rated Destinations
         </h2>
-        <p className="text-primary font-semibold text-sm">
+        <p className="text-primary font-bold text-base">
           Curated excursions with instant confirmation
         </p>
       </div>
@@ -96,10 +96,10 @@ export default function DestinationsCarousel() {
                 From ${destination.price}
               </div>
             </div>
-            <h3 className="font-bold text-primary text-lg leading-tight mb-1">
+            <h3 className="font-bold text-primary text-lg leading-tight mb-2">
               {destination.title}
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-sm text-primary font-semibold">
               {destination.rating} ★ ({destination.reviews}) · Instant confirmation
             </p>
           </div>

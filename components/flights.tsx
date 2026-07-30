@@ -51,10 +51,10 @@ export default function Flights() {
   return (
     <section id="flights" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="mb-12 section-reveal">
-        <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+        <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-3">
           Flights & Travel
         </h2>
-        <p className="text-slate-500 text-sm">
+        <p className="text-primary font-bold text-base">
           Best flight deals for your next adventure
         </p>
       </div>
@@ -67,10 +67,10 @@ export default function Flights() {
           >
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="font-bold text-primary text-sm sm:text-base mb-1">
+                <h3 className="font-bold text-primary text-sm sm:text-base mb-2">
                   {flight.airline}
                 </h3>
-                <p className="text-xs text-slate-500 flex items-center gap-1">
+                <p className="text-sm font-semibold text-primary flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   {flight.stops}
                 </p>
@@ -86,17 +86,17 @@ export default function Flights() {
                   <p className="font-bold text-primary text-lg">
                     {flight.from}
                   </p>
-                  <p className="text-xs text-slate-500">{flight.departure}</p>
+                  <p className="text-sm font-semibold text-primary">{flight.departure}</p>
                 </div>
                 <Plane className="w-5 h-5 text-slate-400 mx-3 rotate-90" />
                 <div className="text-center flex-1">
                   <p className="font-bold text-primary text-lg">{flight.to}</p>
-                  <p className="text-xs text-slate-500">{flight.arrival}</p>
+                  <p className="text-sm font-semibold text-primary">{flight.arrival}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-600">
+              <div className="flex items-center justify-between text-base font-semibold text-primary">
                 <span>{flight.duration}</span>
-                <button className="text-accent hover:text-accent-hover font-semibold">
+                <button className="text-accent hover:text-accent-hover font-bold">
                   View Details
                 </button>
               </div>

@@ -39,10 +39,10 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="mb-12 section-reveal">
-        <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+        <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-3">
           What Our Travelers Say
         </h2>
-        <p className="text-slate-500 text-sm">
+        <p className="text-primary font-bold text-base">
           Real experiences from real travelers
         </p>
       </div>
@@ -59,7 +59,7 @@ export default function Testimonials() {
               </div>
               <div>
                 <h4 className="font-bold text-primary">{testimonial.name}</h4>
-                <p className="text-xs text-slate-500">{testimonial.location}</p>
+                <p className="text-sm font-semibold text-primary">{testimonial.location}</p>
               </div>
             </div>
 
@@ -72,7 +72,7 @@ export default function Testimonials() {
               ))}
             </div>
 
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-primary font-medium text-base leading-relaxed">
               &quot;{testimonial.text}&quot;
             </p>
           </div>
