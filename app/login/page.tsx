@@ -38,23 +38,36 @@ function LoginContent() {
           body: JSON.stringify({ 
             email, 
             password,
-            first_name: name,
-            is_admin: isAdmin
+            first_name: name
           }),
         })
 
         const data = await response.json()
 
         if (!response.ok) {
-          setError(data.message || 'Sign up failed')
+          setError(data.error || data.message || 'Sign up failed')
           return
         }
 
-        // Store token
-        localStorage.setItem('authToken', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+        // For signup, create a JWT token for the new user
+        const loginResponse = await fetch('http://localhost:3001/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
 
-        // Redirect to dashboard
+        const loginData = await loginResponse.json()
+
+        if (!loginResponse.ok) {
+          setError(loginData.error || 'Login after signup failed')
+          return
+        }
+
+        // Store token and user data
+        localStorage.setItem('authToken', loginData.token)
+        localStorage.setItem('user', JSON.stringify(loginData.user))
+
+        // Redirect to user dashboard for new users
         router.push('/user/dashboard')
       } else {
         // Single login endpoint - backend checks is_admin in database
