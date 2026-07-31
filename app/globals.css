@@ -18,8 +18,21 @@ html {
 
 body {
   font-family: var(--font-poppins, 'Poppins', sans-serif);
-  color: var(--primary);
+  color: #0B1E3D;
   overflow-x: hidden;
+}
+
+/* Deep blue and black text colors */
+p, span, li, div, h1, h2, h3, h4, h5, h6, label, button, a {
+  color-scheme: light;
+}
+
+p {
+  color: #1a1a1a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0B1E3D;
 }
 
 .font-serif {
