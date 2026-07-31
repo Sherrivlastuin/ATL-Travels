@@ -41,7 +41,15 @@ export default function AdminDashboard() {
       return
     }
 
-    setUser(JSON.parse(userData))
+    const parsedUser = JSON.parse(userData)
+    
+    // Redirect non-admins to user dashboard
+    if (parsedUser.is_admin !== true) {
+      router.push('/user/dashboard')
+      return
+    }
+
+    setUser(parsedUser)
     fetchFlights(token)
   }, [router])
 

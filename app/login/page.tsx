@@ -13,7 +13,6 @@ function LoginContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
   const [isSignup, setIsSignup] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -58,9 +57,8 @@ function LoginContent() {
         // Redirect to dashboard
         router.push('/user/dashboard')
       } else {
-        // Login endpoint
-        const endpoint = isAdmin ? '/api/auth/admin-login' : '/api/auth/login'
-        const response = await fetch(`http://localhost:3001${endpoint}`, {
+        // Single login endpoint - backend checks is_admin in database
+        const response = await fetch('http://localhost:3001/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -69,16 +67,16 @@ function LoginContent() {
         const data = await response.json()
 
         if (!response.ok) {
-          setError(data.message || 'Login failed')
+          setError(data.error || data.message || 'Login failed')
           return
         }
 
-        // Store token
+        // Store token and user data
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
 
-        // Redirect based on user type
-        if (data.user?.is_admin) {
+        // Redirect based on is_admin flag from database
+        if (data.user?.is_admin === true) {
           router.push('/admin/dashboard')
         } else {
           router.push('/user/dashboard')
@@ -146,21 +144,7 @@ function LoginContent() {
               </div>
             )}
 
-            {/* Admin Toggle - Show only for login */}
-            {!isSignup && (
-              <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-300 rounded-xl">
-                <input
-                  type="checkbox"
-                  id="isAdmin"
-                  checked={isAdmin}
-                  onChange={(e) => setIsAdmin(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-slate-800"
-                />
-                <label htmlFor="isAdmin" className="text-sm font-bold text-slate-900">
-                  Login as Admin
-                </label>
-              </div>
-            )}
+
 
             {/* Email Field */}
             <div>
@@ -217,6 +201,7 @@ function LoginContent() {
               <p className="text-xs font-bold text-slate-900 mb-2">Demo Credentials:</p>
               <p className="text-xs text-slate-800 font-semibold">Email: atltravels@hotmail.com</p>
               <p className="text-xs text-slate-800 font-semibold">Password: atltravels</p>
+              <p className="text-xs text-slate-700 mt-2 italic">This account has admin privileges</p>
             </div>
           )}
 

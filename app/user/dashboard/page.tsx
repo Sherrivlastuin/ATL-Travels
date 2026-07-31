@@ -28,7 +28,15 @@ export default function UserDashboard() {
       return
     }
 
-    setUser(JSON.parse(userData))
+    const parsedUser = JSON.parse(userData)
+    
+    // Redirect admins to admin dashboard
+    if (parsedUser.is_admin === true) {
+      router.push('/admin/dashboard')
+      return
+    }
+
+    setUser(parsedUser)
     fetchBookings(token)
   }, [router])
 
