@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 
@@ -12,6 +13,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1535498730771-e735b998cd64?auto=format&fit=crop&w=800&q=80',
+    slug: 'miami',
   },
   {
     id: 2,
@@ -21,6 +23,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1544144433-d50aff500b91?auto=format&fit=crop&w=800&q=80',
+    slug: 'turks-caicos',
   },
   {
     id: 3,
@@ -30,6 +33,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80',
+    slug: 'jamaica',
   },
   {
     id: 4,
@@ -39,6 +43,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=800&q=80',
+    slug: 'thailand',
   },
   {
     id: 5,
@@ -48,6 +53,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80',
+    slug: 'cancun',
   },
   {
     id: 6,
@@ -57,6 +63,7 @@ const destinations = [
     rating: '5.0',
     reviews: '2.4k',
     image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80',
+    slug: 'bali',
   },
 ]
 
@@ -75,34 +82,35 @@ export default function DestinationsCarousel() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 section-reveal">
         {destinations.map((destination) => (
-          <div
+          <Link
             key={destination.id}
-            className="group cursor-pointer"
+            href={`/destinations/${destination.slug}`}
+            className="group cursor-pointer hover:no-underline"
           >
             <div className="relative h-64 rounded-3xl overflow-hidden mb-4">
               <img
                 src={destination.image}
                 alt={destination.location}
-                className="w-full h-full object-cover img-zoom"
+                className="w-full h-full object-cover img-zoom group-hover:scale-110 transition-transform duration-300"
               />
               <div className="absolute top-4 left-4 bg-white/95 backdrop-blur text-primary text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 {destination.location}
               </div>
-              <div className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-white/20 backdrop-blur text-white flex items-center justify-center btn-icon">
+              <div className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-white/20 backdrop-blur text-white flex items-center justify-center btn-icon group-hover:bg-accent transition-colors">
                 <ArrowUpRight className="w-4 h-4" />
               </div>
               <div className="absolute bottom-4 left-4 bg-primary/90 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
                 From ${destination.price}
               </div>
             </div>
-            <h3 className="font-bold text-primary text-lg leading-tight mb-2">
+            <h3 className="font-bold text-primary text-lg leading-tight mb-2 group-hover:text-accent transition-colors">
               {destination.title}
             </h3>
             <p className="text-sm text-primary font-semibold">
-              {destination.rating} ★ ({destination.reviews}) · Instant confirmation
+              {destination.rating} ★ ({destination.reviews}) · View Details
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

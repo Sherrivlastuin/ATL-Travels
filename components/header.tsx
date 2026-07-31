@@ -1,12 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Bell, Menu, X } from 'lucide-react'
+import { Bell, Menu, X, LogIn, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      const parsedUser = JSON.parse(userData)
+      setUser(parsedUser)
+      setIsAdmin(parsedUser.is_admin || false)
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('user')
+    setUser(null)
+    setIsAdmin(false)
+    router.push('/')
+  }
 
   const navLinks = [
     { href: '#destinations', label: 'Destinations' },
@@ -44,12 +65,41 @@ export default function Header() {
               <button className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
                 <Bell className="w-5 h-5 text-slate-600" />
               </button>
-              <Link
-                href="#booking"
-                className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-full bg-accent text-white font-semibold text-sm shadow-lg shadow-orange-500/20 hover:bg-accent-hover transition-colors"
-              >
-                BOOK NOW
-              </Link>
+
+              {user ? (
+                <>
+                  <Link
+                    href={isAdmin ? '/admin/dashboard' : '/user/dashboard'}
+                    className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-primary hover:text-white transition-colors"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    {isAdmin ? 'Admin' : 'My Profile'}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-full bg-red-500 text-white font-semibold text-sm hover:bg-red-600 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-primary hover:text-white transition-colors"
+                  >
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Login
+                  </Link>
+                  <Link
+                    href="/bookings"
+                    className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-full bg-accent text-white font-semibold text-sm shadow-lg shadow-orange-500/20 hover:bg-accent-hover transition-colors"
+                  >
+                    BOOK NOW
+                  </Link>
+                </>
+              )}
+
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors"
