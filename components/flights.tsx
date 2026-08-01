@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Plane, MapPin, Calendar } from 'lucide-react'
 
 export default function Flights() {
@@ -96,9 +97,9 @@ export default function Flights() {
               </div>
               <div className="flex items-center justify-between text-base font-semibold text-primary">
                 <span>{flight.duration}</span>
-                <button className="text-accent hover:text-accent-hover font-bold">
+                <Link href="/bookings" className="text-accent hover:text-accent-hover font-bold">
                   View Details
-                </button>
+                </Link>
               </div>
             </div>
           </div>

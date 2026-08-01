@@ -63,7 +63,7 @@ export default function Hero() {
               </Link>
             </div>
             <Link
-              href="#booking"
+              href="/bookings"
               className="inline-flex items-center px-8 py-4 rounded-full bg-accent text-white font-bold tracking-wide shadow-xl shadow-orange-500/30 hover:bg-accent-hover hover:-translate-y-1 transition-all"
             >
               BOOK NOW
