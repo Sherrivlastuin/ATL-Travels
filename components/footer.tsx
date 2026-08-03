@@ -1,11 +1,18 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
-import { Share2, Music2, Mail, Heart } from 'lucide-react'
+import { Share2, Music2, Mail, Heart, LogIn } from 'lucide-react'
+import AdminLoginModal from './admin-login-modal'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
 
   return (
-    <footer className="bg-primary text-white py-16 px-4 sm:px-6 lg:px-8">
+    <>
+      <AdminLoginModal isOpen={showAdminLogin} onClose={() => setShowAdminLogin(false)} />
+      <footer className="bg-primary text-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
@@ -129,13 +136,23 @@ export default function Footer() {
             <p className="text-white/70 text-sm">
               © {currentYear} ATL TRAVELS. All rights reserved.
             </p>
-            <p className="text-white/70 text-sm flex items-center gap-1">
-              Made with <Heart className="w-4 h-4 text-accent fill-accent" /> for luxury
-              travelers
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-white/70 text-sm flex items-center gap-1">
+                Made with <Heart className="w-4 h-4 text-accent fill-accent" /> for luxury
+                travelers
+              </p>
+              <button
+                onClick={() => setShowAdminLogin(true)}
+                className="p-2 rounded-full hover:bg-white/10 transition opacity-40 hover:opacity-100"
+                aria-label="Admin login"
+              >
+                <LogIn className="w-4 h-4 text-white/50" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </footer>
+    </>
   )
 }
