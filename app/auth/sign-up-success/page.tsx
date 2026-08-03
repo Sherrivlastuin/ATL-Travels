@@ -4,8 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, ArrowRight } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function SignUpSuccess() {
+function SignUpSuccessContent() {
   const searchParams = useSearchParams()
   const email = searchParams?.get('email') || ''
 
@@ -60,5 +61,17 @@ export default function SignUpSuccess() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignUpSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <p className="text-slate-600">Loading...</p>
+      </div>
+    }>
+      <SignUpSuccessContent />
+    </Suspense>
   )
 }
