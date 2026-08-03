@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
 export default async function Page({
   searchParams,
 }: {
@@ -13,27 +11,25 @@ export default async function Page({
   const isErrorCode = typeof code === 'string' && /^[a-z0-9_]{1,64}$/.test(code)
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10 bg-background">
       <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Sorry, something went wrong.
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isErrorCode ? (
-                <p className="text-sm text-muted-foreground">
-                  Code error: {code}
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  An unspecified error occurred.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Sorry, something went wrong.
+          </h2>
+          <div className="text-sm text-gray-600">
+            {isErrorCode ? (
+              <p>Error code: {code}</p>
+            ) : (
+              <p>An unspecified error occurred.</p>
+            )}
+          </div>
+          <a
+            href="/"
+            className="mt-6 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Go back home
+          </a>
         </div>
       </div>
     </div>
