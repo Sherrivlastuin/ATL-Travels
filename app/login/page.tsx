@@ -33,7 +33,7 @@ function LoginContent() {
       const supabase = createClient()
 
       if (isSignup) {
-        // Sign up
+        // Sign up with Supabase
         const { data, error: signupError } = await supabase.auth.signUp({
           email,
           password,

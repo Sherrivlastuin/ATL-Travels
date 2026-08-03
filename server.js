@@ -112,7 +112,6 @@ app.post('/api/auth/signup', async (req, res) => {
         data: {
           first_name: first_name || '',
           last_name: last_name || '',
-          is_admin: false,
         },
       },
     })
@@ -126,11 +125,26 @@ app.post('/api/auth/signup', async (req, res) => {
       await supabaseAdmin.auth.admin.updateUserById(data.user.id, {
         email_confirm: true,
       })
+
+      // Create profile record with is_admin set to false
+      await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          email: email,
+          first_name: first_name || '',
+          last_name: last_name || '',
+          is_admin: false,
+        })
     }
 
     res.status(201).json({
       message: 'User created successfully',
-      user: data.user,
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        is_admin: false,
+      },
     })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -202,7 +216,7 @@ app.get('/api/flights', async (req, res) => {
       return res.status(400).json({ error: error.message })
     }
 
-    res.json(data)
+    res.json({ data })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -371,7 +385,7 @@ app.get('/api/bookings', verifyToken, async (req, res) => {
       return res.status(400).json({ error: error.message })
     }
 
-    res.json(data)
+    res.json({ data })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -424,7 +438,7 @@ app.get('/api/messages', verifyToken, async (req, res) => {
       return res.status(400).json({ error: error.message })
     }
 
-    res.json(data)
+    res.json({ data })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -544,7 +558,7 @@ app.get('/api/media', verifyToken, async (req, res) => {
       return res.status(400).json({ error: error.message })
     }
 
-    res.json(data)
+    res.json({ data })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
