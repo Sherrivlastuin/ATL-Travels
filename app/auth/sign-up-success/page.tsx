@@ -3,11 +3,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, ArrowRight } from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function SignUpSuccess() {
-  const searchParams = useSearchParams()
-  const email = searchParams?.get('email') || ''
+  const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setEmail(params.get('email') || '')
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center px-4 py-8">

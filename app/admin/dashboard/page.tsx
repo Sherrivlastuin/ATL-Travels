@@ -32,7 +32,6 @@ export default function AdminDashboard() {
     stops: '',
   })
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
     checkAdminAuth()
@@ -40,6 +39,7 @@ export default function AdminDashboard() {
 
   const checkAdminAuth = async () => {
     try {
+      const supabase = createClient()
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser()
@@ -144,6 +144,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
+      const supabase = createClient()
       await supabase.auth.signOut()
       router.push('/')
     } catch (err) {
