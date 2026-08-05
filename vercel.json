@@ -1,0 +1,30 @@
+{
+    "projectId": "prj_Oc1NVMvUU8kshwfLLpilWL6vZbAL",
+    "orgId": "team_KKvDgxhIlSuNIRpR1Ib3ZxAV",
+    "buildCommand": "pnpm build",
+    "installCommand": "pnpm install",
+    "framework": "nextjs",
+    "outputDirectory": ".next",
+    "env": [
+        {
+            "key": "NEXT_PUBLIC_SUPABASE_URL",
+            "value": "@next_public_supabase_url"
+        },
+        {
+            "key": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+            "value": "@next_public_supabase_anon_key"
+        },
+        {
+            "key": "SUPABASE_SERVICE_ROLE_KEY",
+            "value": "@supabase_service_role_key"
+        },
+        {
+            "key": "NEXT_PUBLIC_API_URL",
+            "value": "@next_public_api_url"
+        },
+        {
+            "key": "NODE_ENV",
+            "value": "production"
+        }
+    ]
+}
