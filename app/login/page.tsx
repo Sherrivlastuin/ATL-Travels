@@ -5,11 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -30,73 +30,54 @@ function LoginContent() {
     setError('')
 
     try {
+      const supabase = createClient()
+
       if (isSignup) {
-        // Sign up endpoint
-        const response = await fetch('http://localhost:3001/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email, 
-            password,
-            first_name: name
-          }),
+        // Sign up with Supabase
+        const { data, error: signupError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo:
+              process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+              `${window.location.origin}/auth/callback`,
+          },
         })
 
-        const data = await response.json()
-
-        if (!response.ok) {
-          setError(data.error || data.message || 'Sign up failed')
+        if (signupError) {
+          if (signupError.message.includes('already registered')) {
+            setError('This email is already registered. Please sign in instead.')
+          } else if (signupError.message.includes('weak password')) {
+            setError('Password is too weak. Please use a stronger password.')
+          } else {
+            setError(signupError.message || 'Sign up failed')
+          }
           return
         }
 
-        // For signup, create a JWT token for the new user
-        const loginResponse = await fetch('http://localhost:3001/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        })
-
-        const loginData = await loginResponse.json()
-
-        if (!loginResponse.ok) {
-          setError(loginData.error || 'Login after signup failed')
-          return
-        }
-
-        // Store token and user data
-        localStorage.setItem('authToken', loginData.token)
-        localStorage.setItem('user', JSON.stringify(loginData.user))
-
-        // Redirect to user dashboard for new users
-        router.push('/user/dashboard')
+        // Show success message
+        setError('')
+        router.push('/auth/sign-up-success?email=' + encodeURIComponent(email))
       } else {
-        // Single login endpoint - backend checks is_admin in database
-        const response = await fetch('http://localhost:3001/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
+        // Sign in
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
         })
 
-        const data = await response.json()
-
-        if (!response.ok) {
-          setError(data.error || data.message || 'Login failed')
+        if (signInError) {
+          setError('Invalid email or password')
           return
         }
 
-        // Store token and user data
-        localStorage.setItem('authToken', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-
-        // Redirect based on is_admin flag from database
-        if (data.user?.is_admin === true) {
-          router.push('/admin/dashboard')
-        } else {
+        if (data.user) {
+          // Redirect to user dashboard
           router.push('/user/dashboard')
         }
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
+      console.error('[v0] Auth error:', err)
     } finally {
       setLoading(false)
     }
@@ -140,25 +121,6 @@ function LoginContent() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mb-8">
-            {/* Name Field - Show only for signup */}
-            {isSignup && (
-              <div>
-                <label className="block text-sm font-bold text-slate-900 mb-2">Full Name</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 border-2 border-slate-300 focus:border-slate-800 focus:ring-2 focus:ring-slate-200 outline-none font-bold text-slate-900 placeholder:text-slate-500"
-                    required={isSignup}
-                  />
-                </div>
-              </div>
-            )}
-
-
-
             {/* Email Field */}
             <div>
               <label className="block text-sm font-bold text-slate-900 mb-2">Email Address</label>
@@ -208,23 +170,16 @@ function LoginContent() {
             </button>
           </form>
 
-          {/* Demo Credentials - Show only for login */}
-          {!isSignup && (
-            <div className="p-4 bg-indigo-50 border-2 border-indigo-300 rounded-xl mb-6">
-              <p className="text-xs font-bold text-slate-900 mb-2">Demo Credentials:</p>
-              <p className="text-xs text-slate-800 font-semibold">Email: atltravels@hotmail.com</p>
-              <p className="text-xs text-slate-800 font-semibold">Password: atltravels</p>
-              <p className="text-xs text-slate-700 mt-2 italic">This account has admin privileges</p>
-            </div>
-          )}
-
           {/* Toggle Sign Up / Login */}
           <p className="text-center text-slate-800 font-bold text-sm">
             {isSignup ? 'Already have an account? ' : "Don't have an account? "}
             <button
               type="button"
-              onClick={() => setIsSignup(!isSignup)}
-              className="text-accent hover:text-accent-hover font-bold"
+              onClick={() => {
+                setIsSignup(!isSignup)
+                setError('')
+              }}
+              className="text-blue-600 hover:text-blue-700 font-bold"
             >
               {isSignup ? 'Sign in' : 'Sign up'}
             </button>

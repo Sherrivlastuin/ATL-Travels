@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { LogOut, Plus, Edit2, Trash2, Plane } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 interface Flight {
   id: string
@@ -33,33 +34,65 @@ export default function AdminDashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    const userData = localStorage.getItem('user')
-    const token = localStorage.getItem('authToken')
+    checkAdminAuth()
+  }, [])
 
-    if (!userData || !token) {
-      router.push('/login')
-      return
-    }
-
-    const parsedUser = JSON.parse(userData)
-    
-    // Redirect non-admins to user dashboard
-    if (parsedUser.is_admin !== true) {
-      router.push('/user/dashboard')
-      return
-    }
-
-    setUser(parsedUser)
-    fetchFlights(token)
-  }, [router])
-
-  const fetchFlights = async (token: string) => {
+  const checkAdminAuth = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/flights', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const data = await response.json()
-      setFlights(data.data || [])
+      const supabase = createClient()
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser()
+
+      if (!authUser) {
+        router.push('/login')
+        return
+      }
+
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
+      if (authUser.email !== adminEmail) {
+        router.push('/user/dashboard')
+        return
+      }
+
+      setUser(authUser)
+      fetchFlights()
+    } catch (err) {
+      console.error('Auth check failed:', err)
+      router.push('/login')
+    }
+  }
+
+  const fetchFlights = async () => {
+    try {
+      // Mock flights data for now
+      const mockFlights: Flight[] = [
+        {
+          id: '1',
+          airline: 'Delta Airlines',
+          departure_city: 'Atlanta',
+          arrival_city: 'Paris',
+          price: 1200,
+          available_seats: 45,
+        },
+        {
+          id: '2',
+          airline: 'United Airlines',
+          departure_city: 'Atlanta',
+          arrival_city: 'Tokyo',
+          price: 1800,
+          available_seats: 32,
+        },
+        {
+          id: '3',
+          airline: 'Air France',
+          departure_city: 'Atlanta',
+          arrival_city: 'London',
+          price: 950,
+          available_seats: 67,
+        },
+      ]
+      setFlights(mockFlights)
     } catch (err) {
       console.error('Failed to fetch flights:', err)
     } finally {
@@ -69,60 +102,54 @@ export default function AdminDashboard() {
 
   const handleAddFlight = async (e: React.FormEvent) => {
     e.preventDefault()
-    const token = localStorage.getItem('authToken')
 
     try {
-      const response = await fetch('http://localhost:3001/api/flights', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        setFormData({
-          airline: '',
-          departure_city: '',
-          arrival_city: '',
-          departure_date: '',
-          arrival_date: '',
-          price: '',
-          available_seats: '',
-          duration: '',
-          stops: '',
-        })
-        setShowAddForm(false)
-        fetchFlights(token || '')
+      // Add to mock flights
+      const newFlight: Flight = {
+        id: Date.now().toString(),
+        airline: formData.airline,
+        departure_city: formData.departure_city,
+        arrival_city: formData.arrival_city,
+        price: parseFloat(formData.price),
+        available_seats: parseInt(formData.available_seats),
       }
+
+      setFlights([...flights, newFlight])
+      setFormData({
+        airline: '',
+        departure_city: '',
+        arrival_city: '',
+        departure_date: '',
+        arrival_date: '',
+        price: '',
+        available_seats: '',
+        duration: '',
+        stops: '',
+      })
+      setShowAddForm(false)
     } catch (err) {
       console.error('Failed to add flight:', err)
     }
   }
 
   const handleDeleteFlight = async (flightId: string) => {
-    const token = localStorage.getItem('authToken')
     if (!window.confirm('Are you sure you want to delete this flight?')) return
 
     try {
-      const response = await fetch(`http://localhost:3001/api/flights/${flightId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-
-      if (response.ok) {
-        fetchFlights(token || '')
-      }
+      setFlights(flights.filter((f) => f.id !== flightId))
     } catch (err) {
       console.error('Failed to delete flight:', err)
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('user')
-    router.push('/')
+  const handleLogout = async () => {
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push('/')
+    } catch (err) {
+      console.error('Logout failed:', err)
+    }
   }
 
   if (loading) {
