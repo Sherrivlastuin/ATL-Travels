@@ -405,7 +405,7 @@ app.post('/api/bookings', verifyToken, async (req, res) => {
       flight_id,
       passengers: parseInt(passengers),
       total_price: parseFloat(total_price),
-      status: 'confirmed',
+      status: 'pending',
     })
 
     if (error) {
@@ -416,6 +416,102 @@ app.post('/api/bookings', verifyToken, async (req, res) => {
       message: 'Booking created successfully',
       booking: data,
     })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// ============================================
+// ADMIN BOOKINGS ROUTES
+// ============================================
+
+app.get('/api/bookings/admin', verifyToken, async (req, res) => {
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', req.user.id)
+      .single()
+
+    if (profileError || !profile?.is_admin) {
+      return res.status(403).json({ error: 'Only admins can access this resource' })
+    }
+
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select('*, flights(*)')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      return res.status(400).json({ error: error.message })
+    }
+
+    const userIds = Array.from(new Set(bookings.map((booking) => booking.user_id)))
+    const { data: users, error: usersError } = await supabase
+      .from('profiles')
+      .select('id, email, first_name, last_name')
+      .in('id', userIds)
+
+    if (usersError) {
+      return res.status(400).json({ error: usersError.message })
+    }
+
+    const userMap = users.reduce((acc, user) => {
+      acc[user.id] = user
+      return acc
+    }, {})
+
+    const enrichedBookings = bookings.map((booking) => ({
+      ...booking,
+      user: userMap[booking.user_id] || { id: booking.user_id, email: 'Unknown' },
+    }))
+
+    res.json({ data: enrichedBookings })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+app.put('/api/bookings/:id/status', verifyToken, async (req, res) => {
+  try {
+    const { status } = req.body
+    const { id } = req.params
+
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status value' })
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', req.user.id)
+      .single()
+
+    if (profileError || !profile?.is_admin) {
+      return res.status(403).json({ error: 'Only admins can modify booking status' })
+    }
+
+    const { data: booking, error: bookingError } = await supabase
+      .from('bookings')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (bookingError || !booking) {
+      return res.status(404).json({ error: 'Booking not found' })
+    }
+
+    const { data, error } = await supabase
+      .from('bookings')
+      .update({ status })
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      return res.status(400).json({ error: error.message })
+    }
+
+    res.json({ message: 'Booking status updated successfully', booking: data })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
